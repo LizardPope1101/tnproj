@@ -1,0 +1,69 @@
+#!/bin/bash
+
+#tnproj is a suite of software project tools.
+#Copyright (C) 2023  Daniel J Martin
+#This file is part of tnproj.
+
+#tnproj is free software: you can redistribute it and/or modify it under the terms of the GNU General
+#Public License as published by the Free Software Foundation, either version 3 of the License, or (at your
+#option) any later version.
+
+#tnproj is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+#the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+#GNU General Public License for more details.
+
+#You should have received a copy of the GNU General Public License along with Foobar. If not, see 
+#<https://www.gnu.org/licenses/>.
+
+username=$USER
+read -p "Please enter the project year: " projectyear
+read -p "Please enter the project number: " project
+project="PR-$project"
+testpath=/home/"$username"/Projects/"$projectyear"/"$project"/05-Test/*
+binpath=/home/"$username"/bin/
+obsoletepath=/home/"$username"/Projects/"$projectyear"/"$project"/01-Project_Files/01-Obsolete/
+programname=$(ls /home/"$username"/Projects/"$projectyear"/"$project"/05-Test)
+
+update () {
+	project1=$1
+	projectyear1=$2
+	longyear=$(date +%Y)
+	shortyear=$(date +%y)
+	clear
+	lowerlim=1
+	upperlim=999
+	condition=1
+	while [ $condition=1 ]
+	do
+		for i in $(seq -f "%03g" $lowerlim $upperlim)
+		do
+			filepath="$obsoletepath/$programname-$i"
+			if test -e "$filepath"; then
+				continue
+			else
+				devlogpath=/home/"$username"/Projects/"$projectyear"/"$project"/02-Project_Logs/02-Written_Logs/02-Dev_Logs/"$project-DL-$i"
+				echo "tnproj: Copying $binpath/$progname to $obsoletepath/$progname-$i"
+				cp -v $binpath/$programname "$obsoletepath/$programname-$i" >> $devlogpath 2>> $devlogpath
+				sleep .5
+				echo "tnproj: Removing $binpath/$programname"
+				rm -v $binpath/$programname >> $devlogpath 2>> $devlogpath
+				sleep .5
+				cp -v $testpath "$binpath/$programname" >> $devlogpath 2>> $devlogpath
+				echo "tnrpoj: Copying $testpath to $binpath/$programname"
+				sleep .5
+				echo "tnproj: UPDATE COMPLETE"
+				echo "tnproj: TERMINATING PROGRAM..."
+				sleep .5
+				break
+			fi
+			break
+		done
+		break
+	done
+	sleep .5
+	sleep 2
+}
+
+update $project1 $projectyear1
+
+exit

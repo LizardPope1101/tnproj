@@ -1,0 +1,107 @@
+#!/bin/bash
+
+	#tnproj is a suite of software project tools.
+    #Copyright (C) 2023  Daniel J Martin
+
+    #This program is free software: you can redistribute it and/or modify
+    #it under the terms of the GNU General Public License as published by
+    #the Free Software Foundation, either version 3 of the License, or
+    #(at your option) any later version.
+
+    #This program is distributed in the hope that it will be useful,
+    #but WITHOUT ANY WARRANTY; without even the implied warranty of
+    #MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    #GNU General Public License for more details.
+
+    #You should have received a copy of the GNU General Public License
+    #along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+username=$USER
+
+title () {
+	clear
+	figlet "$1" -f bubble
+	echo "tnproj  Copyright (C) 2023  Daniel J Martin"
+    echo "This program comes with ABSOLUTELY NO WARRANTY; for details type 'w'."
+    echo "This is free software, and you are welcome to redistribute it"
+    echo "under certain conditions; type 'c' for details."
+}
+
+title "tnproj"
+
+runagain () {
+	echo "Press 'y' to run again, and 'n' to exit:"
+	read -p "tnproj: " selection
+	if [ "$selection" = y ]
+	then
+		clear
+		title "tnproj"
+		main
+	elif [ "$selection" = n ]
+	then
+		clear
+		exit
+	else
+		clear
+		runagain
+	fi
+}
+
+main () {
+	echo "Please select a module from the list below:"
+	echo "w - Show Warranty"
+	echo "c - Show Full License"
+	echo "0 - Exit"
+	echo "1 - mkproj"
+	echo "2 - testenv"
+	echo "3 - updateproj"
+	read -p "tnproj: " selection
+
+	if [ "$selection" = 1 ]
+	then
+		sleep 1
+		mkproj
+		sleep 1
+		runagain
+	elif [ "$selection" = 2 ]
+	then
+		sleep 1
+		testenv
+		sleep 1
+		runagain
+	elif [ "$selection" = 3 ]
+	then
+		sleep 1
+		updateproj
+		sleep 1
+		runagain
+	elif [ "$selection" = 0 ]
+	then
+		clear
+		exit
+	elif [ "$selection" = w ]
+	then
+		cat "/home/$username/Projects/2023/PR-23006/03-Project_Docs/01-Licenses/showw"
+		echo "Press any Key to continue: "
+		read -n 1 -s -r -p "tnproj: "
+		clear
+		title "tnproj"
+		main
+	elif [ "$selection" = c ]
+	then
+		cat "/home/$username/Projects/2023/PR-23006/03-Project_Docs/COPYING"
+		echo "Press any Key to continue: "
+		read -n 1 -s -r -p "tnproj: "
+		clear
+		title "tnproj"
+		main
+	else
+		clear
+		title "tnproj"
+		main
+	fi
+
+	exit
+}
+
+main

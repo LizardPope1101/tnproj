@@ -1,0 +1,79 @@
+#!/bin/bash
+
+#tnproj is a suite of software project tools.
+#Copyright (C) 2023  Daniel J Martin
+#This file is part of tnproj.
+
+#tnproj is free software: you can redistribute it and/or modify it under the terms of the GNU General
+#Public License as published by the Free Software Foundation, either version 3 of the License, or (at your
+#option) any later version.
+
+#tnproj is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+#the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+#GNU General Public License for more details.
+
+#You should have received a copy of the GNU General Public License along with Foobar. If not, see 
+#<https://www.gnu.org/licenses/>.
+
+username=$USER
+read -p "Please enter the project year: " projectyear
+read -p "Please enter the project number: " project
+project="PR-$project"
+testpath=/home/"$username"/Projects/"$projectyear"/"$project"/05-Test
+logpath=0
+
+logentry () {
+	logdate=$(date +%Y%m%d%H%M%S"-$1")
+	echo $logdate >> $logpath
+	echo $logdate
+}
+
+create_logfile () {
+	project1=$1
+	projectyear1=$2
+	longyear=$(date +%Y)
+	shortyear=$(date +%y)
+	clear
+	lowerlim=1
+	upperlim=999
+	condition=1
+	while [ $condition=1 ]
+	do
+		for i in $(seq -f "%03g" $lowerlim $upperlim)
+		do
+			filepath=/home/"$username"/Projects/"$projectyear"/"$project"/02-Project_Logs/02-Written_Logs/01-Test_Logs/"$project-TL-$i"
+			if test -e "$filepath"; then
+				continue
+			else
+				sudo touch $filepath
+				sudo chown "$username":"$username" $filepath
+				logpath=$filepath
+				logentry "LOG FILE CREATED"
+				condition=0
+				break
+			fi
+			break
+		done
+		break
+	done
+	sleep .5
+	sleep 2
+}
+
+runprog () {
+	start=`date +%s`
+	logentry "PROGRAM STARTED" 
+	cd $testpath
+	./*
+	logentry "PROGRAM ENDED"
+	end=`date +%s`
+	runtime=$((end-start))
+	logentry "PROGRAM EXECUTED IN $runtime SECONDS"
+	echo "Program executed in $runtime seconds"
+}
+
+create_logfile $project1 $projectyear1
+
+runprog
+
+exit

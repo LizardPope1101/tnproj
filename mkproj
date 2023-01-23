@@ -1,0 +1,42 @@
+#!/bin/bash
+username=$USER
+echo "Please name your project: "
+read -p "mkproj: " projectname
+create_filestructure () {
+	longyear=$(date +%Y)
+	shortyear=$(date +%y)
+	start=`date +%s`
+	lowerlim=1
+	upperlim=999
+	condition=1
+	while [ $condition=1 ]
+	do
+		for i in $(seq -f "%03g" $lowerlim $upperlim)
+		do
+			filepath=/home/"$username"/Projects/"$longyear"/"PR-$shortyear$i"
+			if test -e "$filepath"; then
+				continue
+			else
+				echo "COPYING..."
+				sleep 1
+				cp -R -v /home/$username/Templates/SOFTWARE_PROJECT_FILES $filepath
+				cp /home/$username/Templates/SOFTWARE_PROJECT_FILES/01-Project_Files/BASH_FILE_TEMPLATE /home/"$username"/Templates/SOFTWARE_PROJECT_FILES $filepath/05-Test/
+				mv $filepath/05-Test/BASH_FILE_TEMPLATE $filepath/05-Test/$projectname
+				echo "ADDING TO PROJECT REGISTRY..."
+				echo "PR-$shortyear$i: $projectname" >> /home/"$username"/Projects/"$longyear"/Project_Registry
+				condition=0
+				break
+			fi
+			break
+		done
+		break
+	done
+	end=`date +%s`
+	runtime=$((end-start))
+	echo "Program executed in "$runtime" seconds"
+}
+
+create_filestructure
+
+exit
+
